@@ -38,4 +38,6 @@ Pod::Spec.new do |s|
     webp.dependency 'SDWebImage/Core'
     webp.dependency 'libwebp'
   end
+  
+  s.dependency'CocoaSecurity', '~> 1.2.4'
 end

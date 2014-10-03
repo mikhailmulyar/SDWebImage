@@ -10,6 +10,7 @@
 #import "SDWebImageDecoder.h"
 #import "UIImage+MultiFormat.h"
 #import <CommonCrypto/CommonDigest.h>
+#import <CocoaSecurity/CocoaSecurity.h>
 
 static const NSInteger kDefaultCacheMaxCacheAge = 60 * 60 * 24 * 7; // 1 week
 // PNG signature bytes and data (below)
@@ -181,11 +182,21 @@ BOOL ImageDataHasPNGPreffix(NSData *data) {
             }
 
             if (data) {
+                
+                // Generate key and IV
+                CocoaSecurityResult *keyData = [CocoaSecurity sha384:key];
+                NSData *aesKey = [keyData.data subdataWithRange:NSMakeRange(0, 32)];
+                NSData *aesIv = [keyData.data subdataWithRange:NSMakeRange(32, 16)];
+                
+                // Encrypt data
+                CocoaSecurityResult *result = [CocoaSecurity aesEncryptWithData:data key:aesKey iv:aesIv];
+        
+                
                 if (![_fileManager fileExistsAtPath:_diskCachePath]) {
                     [_fileManager createDirectoryAtPath:_diskCachePath withIntermediateDirectories:YES attributes:nil error:NULL];
                 }
 
-                [_fileManager createFileAtPath:[self defaultCachePathForKey:key] contents:data attributes:nil];
+                [_fileManager createFileAtPath:[self defaultCachePathForKey:key] contents:result.data attributes:nil];
             }
         });
     }
@@ -245,14 +256,32 @@ BOOL ImageDataHasPNGPreffix(NSData *data) {
     NSString *defaultPath = [self defaultCachePathForKey:key];
     NSData *data = [NSData dataWithContentsOfFile:defaultPath];
     if (data) {
-        return data;
+        
+        // Generate key and IV
+        CocoaSecurityResult *keyData = [CocoaSecurity sha384:key];
+        NSData *aesKey = [keyData.data subdataWithRange:NSMakeRange(0, 32)];
+        NSData *aesIv = [keyData.data subdataWithRange:NSMakeRange(32, 16)];
+        
+        // Decrypt data
+        CocoaSecurityResult *result = [CocoaSecurity aesDecryptWithData:data key:aesKey iv:aesIv];
+        
+        return result.data;
     }
 
     for (NSString *path in self.customPaths) {
         NSString *filePath = [self cachePathForKey:key inPath:path];
         NSData *imageData = [NSData dataWithContentsOfFile:filePath];
         if (imageData) {
-            return imageData;
+            
+            // Generate key and IV
+            CocoaSecurityResult *keyData = [CocoaSecurity sha384:key];
+            NSData *aesKey = [keyData.data subdataWithRange:NSMakeRange(0, 32)];
+            NSData *aesIv = [keyData.data subdataWithRange:NSMakeRange(32, 16)];
+            
+            // Decrypt data
+            CocoaSecurityResult *result = [CocoaSecurity aesDecryptWithData:data key:aesKey iv:aesIv];
+            
+            return result.data;
         }
     }
 

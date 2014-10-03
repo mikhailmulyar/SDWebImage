@@ -1,3 +1,6 @@
 [submodule "Vendors/libwebp"]
 	path = Vendors/libwebp
 	url = http://git.chromium.org/webm/libwebp.git
+[submodule "Vendors/CocoaSecurity"]
+	path = Vendors/CocoaSecurity
+	url = http://github.com/kelp404/CocoaSecurity
