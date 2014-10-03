@@ -185,8 +185,8 @@ BOOL ImageDataHasPNGPreffix(NSData *data) {
                 
                 // Generate key and IV
                 CocoaSecurityResult *keyData = [CocoaSecurity sha384:key];
-                NSData *aesKey = [keyData.data subdataWithRange:NSMakeRange(0, 32)];
-                NSData *aesIv = [keyData.data subdataWithRange:NSMakeRange(32, 16)];
+                NSData *aesKey = self.aesKey ?: [keyData.data subdataWithRange:NSMakeRange(0, 32)];
+                NSData *aesIv = self.aesIv ?: [keyData.data subdataWithRange:NSMakeRange(32, 16)];
                 
                 // Encrypt data
                 CocoaSecurityResult *result = [CocoaSecurity aesEncryptWithData:data key:aesKey iv:aesIv];
@@ -259,8 +259,8 @@ BOOL ImageDataHasPNGPreffix(NSData *data) {
         
         // Generate key and IV
         CocoaSecurityResult *keyData = [CocoaSecurity sha384:key];
-        NSData *aesKey = [keyData.data subdataWithRange:NSMakeRange(0, 32)];
-        NSData *aesIv = [keyData.data subdataWithRange:NSMakeRange(32, 16)];
+        NSData *aesKey = self.aesKey ?: [keyData.data subdataWithRange:NSMakeRange(0, 32)];
+        NSData *aesIv = self.aesIv ?: [keyData.data subdataWithRange:NSMakeRange(32, 16)];
         
         // Decrypt data
         CocoaSecurityResult *result = [CocoaSecurity aesDecryptWithData:data key:aesKey iv:aesIv];
@@ -275,8 +275,8 @@ BOOL ImageDataHasPNGPreffix(NSData *data) {
             
             // Generate key and IV
             CocoaSecurityResult *keyData = [CocoaSecurity sha384:key];
-            NSData *aesKey = [keyData.data subdataWithRange:NSMakeRange(0, 32)];
-            NSData *aesIv = [keyData.data subdataWithRange:NSMakeRange(32, 16)];
+            NSData *aesKey = self.aesKey ?: [keyData.data subdataWithRange:NSMakeRange(0, 32)];
+            NSData *aesIv = self.aesIv ?: [keyData.data subdataWithRange:NSMakeRange(32, 16)];
             
             // Decrypt data
             CocoaSecurityResult *result = [CocoaSecurity aesDecryptWithData:data key:aesKey iv:aesIv];

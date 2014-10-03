@@ -51,6 +51,17 @@ typedef void(^SDWebImageCalculateSizeBlock)(NSUInteger fileCount, NSUInteger tot
  */
 @property (assign, nonatomic) NSUInteger maxCacheSize;
 
+
+/**
+ * Key for images encryption.
+ */
+@property (strong, nonatomic) NSData *aesKey;
+
+/**
+ * Initial vector for images encryption.
+ */
+@property (strong, nonatomic) NSData *aesIv;
+
 /**
  * Returns global shared cache instance
  *
