@@ -224,6 +224,14 @@
         // The following code is from http://www.cocoaintheshell.com/2011/05/progressive-images-download-imageio/
         // Thanks to the author @Nyx0uf
 
+        if (self.processingBlock)
+        {
+            NSData *processedData = self.processingBlock (self.request.URL, self.imageData);
+            
+            if (processedData)
+                self.imageData = [processedData mutableCopy];
+        }
+        
         // Get the total bytes downloaded
         const NSInteger totalSize = self.imageData.length;
 

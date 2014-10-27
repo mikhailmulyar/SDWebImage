@@ -153,6 +153,11 @@ static NSString *const kCompletedCallbackKey = @"completed";
                                                                      [sself removeCallbacksForURL:url];
                                                                  }];
         
+        if (wself.processingBlock)
+            operation.processingBlock = wself.processingBlock;
+        else if ([wself.delegate respondsToSelector:@selector (imageDownloader:shouldProcessDataForURL:)])
+            operation.processingBlock = [wself.delegate imageDownloader:wself shouldProcessDataForURL:url];
+        
         if (wself.username && wself.password) {
             operation.credential = [NSURLCredential credentialWithUser:wself.username password:wself.password persistence:NSURLCredentialPersistenceForSession];
         }

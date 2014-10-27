@@ -36,6 +36,12 @@
  */
 @property (assign, nonatomic, readonly) SDWebImageDownloaderOptions options;
 
+
+
+@property (copy, nonatomic) SDWebImageDownloaderDataProcessingBlock processingBlock;
+
+
+
 /**
  *  Initializes a `SDWebImageDownloaderOperation` object
  *

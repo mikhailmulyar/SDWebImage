@@ -70,14 +70,30 @@ extern NSString *const SDWebImageDownloadStopNotification;
 
 typedef void(^SDWebImageDownloaderProgressBlock)(NSInteger receivedSize, NSInteger expectedSize);
 
+typedef NSData *(^SDWebImageDownloaderDataProcessingBlock)(NSURL *url, NSData *data);
+
 typedef void(^SDWebImageDownloaderCompletedBlock)(UIImage *image, NSData *data, NSError *error, BOOL finished);
 
 typedef NSDictionary *(^SDWebImageDownloaderHeadersFilterBlock)(NSURL *url, NSDictionary *headers);
+
+
+
+@class SDWebImageDownloader;
+
+@protocol SDWebImageDownloaderDelegate <NSObject>
+
+@optional
+
+- (SDWebImageDownloaderDataProcessingBlock) imageDownloader:(SDWebImageDownloader *)imageDownloader shouldProcessDataForURL:(NSURL *)imageURL;
+
+@end
 
 /**
  * Asynchronous downloader dedicated and optimized for image loading.
  */
 @interface SDWebImageDownloader : NSObject
+
+@property (weak, nonatomic) id <SDWebImageDownloaderDelegate> delegate;
 
 @property (assign, nonatomic) NSInteger maxConcurrentDownloads;
 
@@ -123,6 +139,10 @@ typedef NSDictionary *(^SDWebImageDownloaderHeadersFilterBlock)(NSURL *url, NSDi
  * NSDictionary will be used as headers in corresponding HTTP request.
  */
 @property (nonatomic, copy) SDWebImageDownloaderHeadersFilterBlock headersFilter;
+
+
+@property (copy, nonatomic) SDWebImageDownloaderDataProcessingBlock processingBlock;
+
 
 /**
  * Set a value for a HTTP header to be appended to each download HTTP request.
