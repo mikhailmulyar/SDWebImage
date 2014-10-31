@@ -230,6 +230,8 @@
             
             if (processedData)
                 self.imageData = [processedData mutableCopy];
+            
+            self.processingBlock = nil;
         }
         
         // Get the total bytes downloaded
@@ -352,6 +354,17 @@
             completionBlock(nil, nil, nil, YES);
         }
         else {
+            
+            if (self.processingBlock)
+            {
+                NSData *processedData = self.processingBlock (self.request.URL, self.imageData);
+                
+                if (processedData)
+                    self.imageData = [processedData mutableCopy];
+                
+                self.processingBlock = nil;
+            }
+            
             UIImage *image = [UIImage sd_imageWithData:self.imageData];
             NSString *key = [[SDWebImageManager sharedManager] cacheKeyForURL:self.request.URL];
             image = [self scaledImageForKey:key image:image];
