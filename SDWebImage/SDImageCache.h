@@ -30,6 +30,8 @@ typedef void(^SDWebImageCheckCacheCompletionBlock)(BOOL isInCache);
 
 typedef void(^SDWebImageCalculateSizeBlock)(NSUInteger fileCount, NSUInteger totalSize);
 
+typedef NSData*(^SDWebImageDataProcessBlock)(NSData *data, NSString *key, BOOL isCaching);
+
 /**
  * SDImageCache maintains a memory cache and an optional disk cache. Disk cache write operations are performed
  * asynchronous so it doesn’t add unnecessary latency to the UI.
@@ -71,6 +73,11 @@ typedef void(^SDWebImageCalculateSizeBlock)(NSUInteger fileCount, NSUInteger tot
  * The maximum size of the cache, in bytes.
  */
 @property (assign, nonatomic) NSUInteger maxCacheSize;
+
+/**
+ * Optional block for processing data before storing it to cache and before receiving it from cache.
+ */
+@property (nonatomic, copy) SDWebImageDataProcessBlock dataProcessBlock;
 
 /**
  * Returns global shared cache instance

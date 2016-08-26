@@ -260,6 +260,10 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
         return;
     }
     
+    if (self.dataProcessBlock) {
+        imageData = self.dataProcessBlock(imageData, key, YES);
+    }
+    
     if (![_fileManager fileExistsAtPath:_diskCachePath]) {
         [_fileManager createDirectoryAtPath:_diskCachePath withIntermediateDirectories:YES attributes:nil error:NULL];
     }
@@ -337,6 +341,9 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     NSString *defaultPath = [self defaultCachePathForKey:key];
     NSData *data = [NSData dataWithContentsOfFile:defaultPath];
     if (data) {
+        if (self.dataProcessBlock) {
+            data = self.dataProcessBlock(data, key, NO);
+        }
         return data;
     }
 
@@ -344,6 +351,9 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
     // checking the key with and without the extension
     data = [NSData dataWithContentsOfFile:[defaultPath stringByDeletingPathExtension]];
     if (data) {
+        if (self.dataProcessBlock) {
+            data = self.dataProcessBlock(data, key, NO);
+        }
         return data;
     }
 
@@ -352,6 +362,9 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
         NSString *filePath = [self cachePathForKey:key inPath:path];
         NSData *imageData = [NSData dataWithContentsOfFile:filePath];
         if (imageData) {
+            if (self.dataProcessBlock) {
+                imageData = self.dataProcessBlock(imageData, key, NO);
+            }
             return imageData;
         }
 
@@ -359,6 +372,9 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
         // checking the key with and without the extension
         imageData = [NSData dataWithContentsOfFile:[filePath stringByDeletingPathExtension]];
         if (imageData) {
+            if (self.dataProcessBlock) {
+                imageData = self.dataProcessBlock(imageData, key, NO);
+            }
             return imageData;
         }
     }
