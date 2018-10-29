@@ -468,6 +468,12 @@ didReceiveResponse:(NSURLResponse *)response
     }
 }
 
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task willPerformHTTPRedirection:(NSHTTPURLResponse *)response newRequest:(NSURLRequest *)request completionHandler:(void (^) (NSURLRequest *_Nullable))completionHandler
+{
+    if (completionHandler)
+        completionHandler(request);
+}
+
 #pragma mark Helper methods
 
 + (UIImageOrientation)orientationFromPropertyValue:(NSInteger)value {
